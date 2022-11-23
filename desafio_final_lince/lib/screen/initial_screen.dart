@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../control/provider.dart';
-
+import '../control/utils/constants.dart';
+import '../model/input_text_form.dart';
 ///OIOIOIOIOIOI
 class InitialScreen extends StatefulWidget {
   ///OIOIOI
@@ -110,36 +111,13 @@ class Widget1 extends StatelessWidget {
           child: TextFormField(
             controller: state.controller,
             validator: (value) {
-              if (MyScreenState().numberValidator(value)) {
+              if (numberValidator(value)) {
                 return 'Insira número válidos';
               }
               return null;
             },
             textAlign: TextAlign.start,
-            decoration: const InputDecoration(
-              errorStyle: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                wordSpacing: 3.0,
-              ),
-              label: Text.rich(
-                TextSpan(
-                  children: <InlineSpan>[
-                    WidgetSpan(
-                      child: Text('Número de vagas'),
-                    ),
-                    WidgetSpan(
-                      child: Text(
-                        '*',
-                        style: TextStyle(color: Colors.blueAccent),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              fillColor: Colors.white,
-              filled: true,
-            ),
+            decoration: inputDecorationTextForm('Numero de vagas'),
           ),
         ),
       ],

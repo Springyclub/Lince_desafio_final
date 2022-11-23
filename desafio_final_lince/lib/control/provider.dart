@@ -61,12 +61,7 @@ class MyScreenState extends ChangeNotifier {
   }
 
   /// Number Validator
-  bool numberValidator(String? value) {
-    if (value != null && value.isEmpty) {
-      return true;
-    }
-    return false;
-  }
+
 
 }
 

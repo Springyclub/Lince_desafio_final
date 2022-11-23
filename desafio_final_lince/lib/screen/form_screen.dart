@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../control/utils/constants.dart';
+import 'package:desafio_final_lince/model/input_text_form.dart';
 
 /// Form screen
 class FormScreen extends StatelessWidget {
@@ -30,11 +31,37 @@ class FormScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(30),
                   child: Column(
                     children: [
-                      action(
-                        parkingLane,
-                        'Faixa de estacionamento',
-                        teste(3)
-                      )
+                      TextFormField(
+                        validator: (value) {
+                          if(valueValidator(value)){
+                            return 'true';
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
+                        decoration: inputDecorationTextForm('Nome do piloto'),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if(valueValidator(value)){
+                            return 'true';
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
+                        decoration: inputDecorationTextForm('Nome do piloto'),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if(valueValidator(value)){
+                            return 'true';
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
+                        decoration: inputDecorationTextForm('Nome do piloto'),
+                      ),
+
                     ],
                   ),
                 )),
@@ -44,42 +71,8 @@ class FormScreen extends StatelessWidget {
     );
   }
 
-  /// Text Form Field
-  TextFormField action(
-      TextEditingController controllerText, String widgetSpan, dynamic vali) {
-    return TextFormField(
-      controller: controllerText,
-      textAlign: TextAlign.start,
-      decoration: InputDecoration(
-        errorStyle: const TextStyle(
-          color: Colors.red,
-          fontWeight: FontWeight.bold,
-          wordSpacing: 3.0,
-        ),
-        label: Text.rich(
-          TextSpan(
-            children: <InlineSpan>[
-              WidgetSpan(
-                child: Text(widgetSpan),
-              ),
-              const WidgetSpan(
-                child: Text(
-                  '*',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          ),
-        ),
-        fillColor: Colors.white,
-        filled: true,
-      ),
-    );
-  }
-}
 
-teste(int a){
-  if(a>3){
-    Text(a.toString());
+  
   }
-}
+
+
