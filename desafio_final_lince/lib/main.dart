@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'model/provider.dart';
+
+import 'control/provider.dart';
+import 'screen/contidion.dart';
+import 'screen/form_screen.dart';
 import 'screen/home_page.dart';
 import 'screen/initial_screen.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -24,6 +26,8 @@ class _MyAppState extends State<MyApp> {
       routes: <String, WidgetBuilder>{
         '/InitialScreen': (context) => const InitialScreen(),
         '/HomePage': (context) => const HomePage(),
+        '/Contidion': (context) => const Contidion(),
+        '/FormScreen': (context) => const FormScreen(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -33,32 +37,10 @@ class _MyAppState extends State<MyApp> {
       home: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) => Counter(),
+            create: (context) => MyScreenState(),
           ),
         ],
-        child: FutureBuilder<int?> (
-          future: Counter().readShared(),
-          builder: (context, snapshot) {
-            switch(snapshot.connectionState){
-              case ConnectionState.none:
-                return const Text('aasdas');
-              case ConnectionState.waiting:
-                return const Text('oi');
-
-              case ConnectionState.active:
-                return const Text('oi');
-
-              case ConnectionState.done:
-                if(Counter().numberValidator(Counter().readShared.toString())){
-                  return const InitialScreen();
-
-                }else{
-                  return const HomePage();
-
-                }
-            }
-          },
-        ),
+        child: const Contidion(),
       ),
     );
   }

@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../model/provider.dart';
+import 'package:provider/provider.dart';
+import '../control/provider.dart';
 
 ///OIOIOIOIOIOI
 class InitialScreen extends StatefulWidget {
@@ -22,99 +23,126 @@ class _InitialScreenState extends State<InitialScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: 200,
-              left: 20,
-              right: 20,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.blue.shade300,
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(width: 3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.shade700.withOpacity(0.5),
-                      blurRadius: 4,
-                      offset: const Offset(5, 8),
-                    ),
-                  ]),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Qual o numero de vagas?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: TextFormField(
-                      controller: numberController,
-                      validator: (value) {
-                        if (Counter().numberValidator(value)) {
-                          return 'Insira número válidos';
-                        }
-                        return null;
-                      },
-                      textAlign: TextAlign.start,
-                      decoration: const InputDecoration(
-                        errorStyle: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                          wordSpacing: 3.0,
+    return ChangeNotifierProvider(
+      create: (_) => MyScreenState(),
+      child: Consumer<MyScreenState>(
+        builder: (_, state, __) {
+          return Form(
+            key: _formKey,
+            child: Scaffold(
+              body: state.loading
+                  ? const Center(
+                child: CircularProgressIndicator(),
+              )
+                  :SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 200,
+                          left: 20,
+                          right: 20,
                         ),
-                        label: Text.rich(
-                          TextSpan(
-                            children: <InlineSpan>[
-                              WidgetSpan(
-                                child: Text('Número de vagas'),
-                              ),
-                              WidgetSpan(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blue.shade300,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(width: 3),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blue.shade700.withOpacity(0.5),
+                                  blurRadius: 4,
+                                  offset: const Offset(5, 8),
+                                ),
+                              ]),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
-                                  '*',
-                                  style: TextStyle(color: Colors.blueAccent),
+                                  'Qual o numero de vagas?',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                  ),
                                 ),
                               ),
+                              const Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Widget1(),
+                              ),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    unawaited(
+                                      Navigator.of(context)
+                                          .popAndPushNamed('/HomePage'),
+                                    );
+                                    if (_formKey.currentState!.validate()) {
+                                      await state.numberVacancies();
+                                    }
+                                  },
+                                  child: const Text('Confirmar')),
                             ],
                           ),
                         ),
-                        fillColor: Colors.white,
-                        filled: true,
                       ),
                     ),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        unawaited(
-                          Navigator.of(context).popAndPushNamed('/HomePage'),
-                        );
-                        if (_formKey.currentState!.validate()) {
-                          unawaited(
-                            Counter().saveShared(
-                              int.parse(numberController.text),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text('Confirmar')),
-                ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+///askdjnals
+class Widget1 extends StatelessWidget {
+  ///jsadhsakdhak
+  const Widget1({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final state = Provider.of<MyScreenState>(context);
+
+    return Column(
+      children: [
+        Center(
+          child: TextFormField(
+            controller: state.controller,
+            validator: (value) {
+              if (MyScreenState().numberValidator(value)) {
+                return 'Insira número válidos';
+              }
+              return null;
+            },
+            textAlign: TextAlign.start,
+            decoration: const InputDecoration(
+              errorStyle: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                wordSpacing: 3.0,
               ),
+              label: Text.rich(
+                TextSpan(
+                  children: <InlineSpan>[
+                    WidgetSpan(
+                      child: Text('Número de vagas'),
+                    ),
+                    WidgetSpan(
+                      child: Text(
+                        '*',
+                        style: TextStyle(color: Colors.blueAccent),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              fillColor: Colors.white,
+              filled: true,
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
