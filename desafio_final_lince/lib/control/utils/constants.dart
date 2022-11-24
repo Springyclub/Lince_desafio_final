@@ -22,12 +22,8 @@ bool valueValidator(String? value) {
 }
 /// Number validator
 bool numberValidator(String? value) {
-  if (value != null && value.isEmpty) {
-    return true;
+  if (value != null && value.isEmpty || int.parse(value!)<=0) {
+      return false;
   }
-  final valueNumber = int.parse(value!).runtimeType;
-  if (valueNumber != value.runtimeType) {
-    return true;
-  }
-  return false;
+  return true;
 }

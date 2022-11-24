@@ -21,9 +21,9 @@ class MyScreenState extends ChangeNotifier {
   int get vacanciesNumber => _vacanciesNumber;
 
   final _formKey = GlobalKey<FormState>();
+
   ///Form key
   GlobalKey<FormState> get formKey => _formKey;
-
 
   /// Text Controller
   TextEditingController get controller => _controller;
@@ -36,13 +36,12 @@ class MyScreenState extends ChangeNotifier {
 
     _vacanciesNumber = prefs.getInt(keyNumberVacancies) ?? 0;
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       _loading = false;
       notifyListeners();
-
     });
-
   }
+
   /// Delete number vacancies
   Future<void> deleteNumberVacancies() async {
     final prefs = await SharedPreferences.getInstance();
@@ -62,6 +61,4 @@ class MyScreenState extends ChangeNotifier {
 
   /// Number Validator
 
-
 }
-

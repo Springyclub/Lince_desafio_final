@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
 import '../model/input_text_form.dart';
+
 ///OIOIOIOIOIOI
 class InitialScreen extends StatefulWidget {
   ///OIOIOI
@@ -33,9 +34,9 @@ class _InitialScreenState extends State<InitialScreen> {
             child: Scaffold(
               body: state.loading
                   ? const Center(
-                child: CircularProgressIndicator(),
-              )
-                  :SingleChildScrollView(
+                      child: CircularProgressIndicator(),
+                    )
+                  : SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.only(
                           top: 200,
@@ -74,12 +75,12 @@ class _InitialScreenState extends State<InitialScreen> {
                               ),
                               ElevatedButton(
                                   onPressed: () async {
-                                    unawaited(
-                                      Navigator.of(context)
-                                          .popAndPushNamed('/HomePage'),
-                                    );
                                     if (_formKey.currentState!.validate()) {
                                       await state.numberVacancies();
+
+                                      // ignore: use_build_context_synchronously
+                                      unawaited(Navigator.popAndPushNamed(context, '/HomePage'));
+
                                     }
                                   },
                                   child: const Text('Confirmar')),
@@ -112,9 +113,9 @@ class Widget1 extends StatelessWidget {
             controller: state.controller,
             validator: (value) {
               if (numberValidator(value)) {
-                return 'Insira número válidos';
+                return null;
               }
-              return null;
+              return 'Insira número válidos';
             },
             textAlign: TextAlign.start,
             decoration: inputDecorationTextForm('Numero de vagas'),

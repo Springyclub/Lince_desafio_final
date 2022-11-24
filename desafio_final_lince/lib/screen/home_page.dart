@@ -38,6 +38,7 @@ class HomePage extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () {
                                 unawaited(state.deleteNumberVacancies());
+                                Navigator.popAndPushNamed(context, '/InitialScreen');
                               },
                               child: const Text(textConfirmeButtonAlertDialog),
 
