@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
       routes: <String, WidgetBuilder>{
         '/InitialScreen': (context) => const InitialScreen(),
         '/HomePage': (context) => const HomePage(),
-        '/Contidion': (context) => const Contidion(),
+        '/Condition': (context) => const Contidion(),
         '/FormScreen': (context) => const FormScreen(),
       },
       title: 'Flutter Demo',

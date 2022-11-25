@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
 
-///Home page
+/// Home page
 class HomePage extends StatelessWidget {
-  ///asdasd
+  /// Home page
   const HomePage({Key? key}) : super(key: key);
 
   @override
@@ -33,21 +33,19 @@ class HomePage extends StatelessWidget {
                                 Navigator.pop(context, false);
                               },
                               child: const Text(textCancelButtonAlertDialog),
-
                             ),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 unawaited(state.deleteNumberVacancies());
-                                Navigator.popAndPushNamed(context, '/InitialScreen');
+                                Navigator.popAndPushNamed(
+                                    context, '/InitialScreen');
                               },
                               child: const Text(textConfirmeButtonAlertDialog),
-
                             )
                           ],
                         );
                       },
                     ));
-
                   },
                   child: const Icon(Icons.exit_to_app_sharp),
                 )

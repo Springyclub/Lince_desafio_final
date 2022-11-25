@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../control/database.dart';
 import '../control/utils/constants.dart';
-import 'package:desafio_final_lince/model/input_text_form.dart';
+import '../model/input_text_form.dart';
 
 /// Form screen
 class FormScreen extends StatelessWidget {
@@ -32,8 +33,9 @@ class FormScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: driverName,
                         validator: (value) {
-                          if(valueValidator(value)){
+                          if (valueValidator(value)) {
                             return 'true';
                           }
                           return null;
@@ -41,27 +43,13 @@ class FormScreen extends StatelessWidget {
                         textAlign: TextAlign.start,
                         decoration: inputDecorationTextForm('Nome do piloto'),
                       ),
-                      TextFormField(
-                        validator: (value) {
-                          if(valueValidator(value)){
-                            return 'true';
-                          }
-                          return null;
-                        },
-                        textAlign: TextAlign.start,
-                        decoration: inputDecorationTextForm('Nome do piloto'),
-                      ),
-                      TextFormField(
-                        validator: (value) {
-                          if(valueValidator(value)){
-                            return 'true';
-                          }
-                          return null;
-                        },
-                        textAlign: TextAlign.start,
-                        decoration: inputDecorationTextForm('Nome do piloto'),
-                      ),
-
+                      ElevatedButton(
+                          onPressed: () async {
+                            await DatabaseHelper().insertPerson(
+                              Person(driverName.text.toString(), 2),
+                            );
+                          },
+                          child: const Text('sa'))
                     ],
                   ),
                 )),
@@ -70,9 +58,4 @@ class FormScreen extends StatelessWidget {
       ),
     );
   }
-
-
-  
-  }
-
-
+}
