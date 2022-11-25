@@ -44,12 +44,11 @@ class FormScreen extends StatelessWidget {
                         decoration: inputDecorationTextForm('Nome do piloto'),
                       ),
                       ElevatedButton(
-                          onPressed: () async {
-                            await DatabaseHelper().insertPerson(
-                              Person(driverName.text.toString(), 2),
-                            );
+                          onPressed: ()  async{
+                            Person('asda', 1);
                           },
-                          child: const Text('sa'))
+                          child: Text('')),
+                      Text('')
                     ],
                   ),
                 )),

@@ -2,29 +2,31 @@ import 'package:sqflite/sqflite.dart';
 
 const _dbVersion = 1;
 
+/// Person db
 class Person {
+  /// Construcor person db
+
   Person(this.name, this.age);
 
   Person.fromDatabaseRow(Map<String, Object?> row)
-      : name = row["name"] as String,
-        age = row["age"] as int;
+      : name = row['name'] as String,
+        age = row['age'] as int;
 
   final int age;
   final String name;
 }
 
+/// Data base helper
 class DatabaseHelper {
+  /// Data base helper with inti
   DatabaseHelper() {
     init();
   }
 
   late Database _db;
 
-  void init() async {
-    // person
-    //   -> name : TEXT
-    //   -> age  : INT
 
+  void init() async {
     final databasesPath = await getDatabasesPath();
     final path = '$databasesPath/demo.db';
 
@@ -32,12 +34,12 @@ class DatabaseHelper {
       path,
       version: _dbVersion,
       onCreate: (database, version) async {
-        await database.execute("""
+        await database.execute('''
         CREATE TABLE person (
           name TEXT,
           age  INT
         );
-        """);
+        ''');
         //
       },
     );
@@ -45,9 +47,9 @@ class DatabaseHelper {
 
   Future<Person?> getPersonNamed(String name) async {
     final rows = await _db.query(
-      "person",
-      columns: ["name", "age"],
-      where: "name = ?",
+      'person',
+      columns: ['name', 'age'],
+      where: 'name = ?',
       whereArgs: [
         name,
       ],
@@ -64,10 +66,10 @@ class DatabaseHelper {
     print('Person > ${person.name}, ${person.age}');
 
     await _db.insert(
-      "person",
+      'person',
       {
-        "name": person.name,
-        "age": person.age,
+        'name': person.name,
+        'age': person.age,
       },
     );
   }
@@ -75,8 +77,8 @@ class DatabaseHelper {
   Future<void> deletePerson(Person person) async {
     print('Delete person > ${person.name}, ${person.age}');
     await _db.delete(
-      "person",
-      where: "name = ?",
+      'person',
+      where: 'name = ?',
       whereArgs: [
         person.name,
       ],
@@ -85,8 +87,8 @@ class DatabaseHelper {
 
   Future<List<Person>> getAll() async {
     final rows = await _db.query(
-      "person",
-      columns: ["name", "age"],
+      'person',
+      columns: ['name', 'age'],
     );
 
     final list = <Person>[];
