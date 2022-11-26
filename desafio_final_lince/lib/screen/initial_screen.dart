@@ -75,11 +75,10 @@ class _InitialScreenState extends State<InitialScreen> {
                               ),
                               ElevatedButton(
                                   onPressed: () async {
-
                                     if (_formKey.currentState!.validate()) {
                                       await state.numberVacancies();
-                                      Navigator.of(context).pop();
-                                      unawaited(Navigator.of(context).popAndPushNamed('/HomePage'));
+                                     Navigator.of(context)
+                                          .popAndPushNamed('/HomePage');
                                     }
                                   },
                                   child: const Text('Confirmar')),

@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../control/database.dart';
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
 
@@ -36,9 +36,8 @@ class HomePage extends StatelessWidget {
                             ),
                             ElevatedButton(
                               onPressed: () async {
-                                unawaited(state.deleteNumberVacancies());
-                                Navigator.popAndPushNamed(
-                                    context, '/InitialScreen');
+                                Navigator.pop(context);
+                                Navigator.popAndPushNamed(context, '/InitialScreen');
                               },
                               child: const Text(textConfirmeButtonAlertDialog),
                             )
@@ -54,19 +53,53 @@ class HomePage extends StatelessWidget {
               title: const Text(titleHomePage),
             ),
             body: state.loading
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Center(child: WidgetVacuns()),
-                    ],
+                ? const CircularProgressIndicator()
+                : FutureBuilder<List<Vacancy>>(
+                    future: getVacancy(),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                          return const Text('data');
+                        case ConnectionState.waiting:
+                          return Center(
+                            child: Container(
+                              margin: const EdgeInsetsDirectional.all(150),
+                              child: const CircularProgressIndicator(),
+                            ),
+                          );
+                        case ConnectionState.active:
+                          return const Text('data');
+                        case ConnectionState.done:
+                          return snapshot.data == null
+                              ? const Center(
+                                  child: Text('TÁ VÁZIO'),
+                                )
+                              : ListView(
+                                  children: snapshot.data!.map((vacancy) {
+                                  return Center(
+                                      child: ListTile(
+                                    title: Column(
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              state.notifyListeners();
+                                              remove(vacancy.id!);
+                                            },
+                                            child: const Text('')),
+                                        Text(vacancy.name.toString()),
+                                        Text(vacancy.id.toString()),
+                                        Text(vacancy.cardBoard.toString()),
+                                      ],
+                                    ),
+                                  ));
+                                }).toList());
+                      }
+                    },
                   ),
             floatingActionButton: FloatingActionButton(
               splashColor: Colors.red,
               onPressed: () {
-                unawaited(Navigator.pushNamed(context, '/FormScreen'));
+                Navigator.pushNamed(context, '/FormScreen');
               },
               child: const Icon(Icons.add),
             ),
@@ -78,17 +111,22 @@ class HomePage extends StatelessWidget {
 }
 
 ///TESTE
-class WidgetVacuns extends StatelessWidget {
+class WidgetVacancies extends StatelessWidget {
   ///TESTE
-  const WidgetVacuns({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MyScreenState>(context);
 
-    return Text(
-      state.vacanciesNumber.toString(),
-      style: const TextStyle(fontSize: 30),
-    );
+    return state.loading
+        ? const CircularProgressIndicator()
+        : Row(
+            children: [
+
+              Text(
+                state.vacanciesNumber.toString(),
+                style: const TextStyle(fontSize: 30),
+              ),
+            ],
+          );
   }
 }

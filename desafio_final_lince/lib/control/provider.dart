@@ -36,7 +36,7 @@ class MyScreenState extends ChangeNotifier {
 
     _vacanciesNumber = prefs.getInt(keyNumberVacancies) ?? 0;
 
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 3), () {
       _loading = false;
       notifyListeners();
     });
@@ -62,3 +62,5 @@ class MyScreenState extends ChangeNotifier {
   /// Number Validator
 
 }
+
+

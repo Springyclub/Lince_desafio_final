@@ -1,19 +1,26 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
 import '../control/database.dart';
 import '../control/utils/constants.dart';
 import '../model/input_text_form.dart';
 
 /// Form screen
-class FormScreen extends StatelessWidget {
-  /// Form screen
+class FormScreen extends StatefulWidget {
+  ///sadad
+  const FormScreen({super.key});
 
-  const FormScreen({Key? key}) : super(key: key);
+  @override
+  State<FormScreen> createState() => _FormScreenState();
+}
+
+class _FormScreenState extends State<FormScreen> {
+  /// Form screen
 
   @override
   Widget build(BuildContext context) {
     ///numero de vagas
-    final parkingLane = TextEditingController();
+    final cardBoard = TextEditingController();
     final driverName = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
@@ -43,12 +50,31 @@ class FormScreen extends StatelessWidget {
                         textAlign: TextAlign.start,
                         decoration: inputDecorationTextForm('Nome do piloto'),
                       ),
+                      TextFormField(
+                        controller: cardBoard,
+                        validator: (value) {
+                          if (valueValidator(value)) {
+                            return 'true';
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
+                        decoration: inputDecorationTextForm('Nome do piloto'),
+                      ),
                       ElevatedButton(
-                          onPressed: ()  async{
-                            Person('asda', 1);
+                          onPressed: () async {
+
+                            setState(() {
+                              Navigator.pop(context);
+                              Navigator.popAndPushNamed(context, '/Condition');
+                              add(
+                                  Vacancy(name: driverName.text, cardBoard: cardBoard.text)
+                              );
+
+                            });
                           },
-                          child: Text('')),
-                      Text('')
+
+                          child: const Text('Adicionar')),
                     ],
                   ),
                 )),

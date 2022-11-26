@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'control/database.dart';
 import 'control/provider.dart';
 import 'screen/contidion.dart';
 import 'screen/form_screen.dart';
 import 'screen/home_page.dart';
 import 'screen/initial_screen.dart';
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 ///sdasd
@@ -27,7 +28,7 @@ class _MyAppState extends State<MyApp> {
         '/InitialScreen': (context) => const InitialScreen(),
         '/HomePage': (context) => const HomePage(),
         '/Condition': (context) => const Contidion(),
-        '/FormScreen': (context) => const FormScreen(),
+        '/FormScreen': (context) =>  FormScreen(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -40,7 +41,7 @@ class _MyAppState extends State<MyApp> {
             create: (context) => MyScreenState(),
           ),
         ],
-        child: const Contidion(),
+        child: HomePage(),
       ),
     );
   }
