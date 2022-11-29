@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'control/database.dart';
 import 'control/provider.dart';
 import 'screen/contidion.dart';
 import 'screen/form_screen.dart';
 import 'screen/home_page.dart';
 import 'screen/initial_screen.dart';
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 ///sdasd
@@ -25,10 +24,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: <String, WidgetBuilder>{
-        '/InitialScreen': (context) => const InitialScreen(),
+        '/InitialScreen': (context) => InitialScreen(),
         '/HomePage': (context) => const HomePage(),
         '/Condition': (context) => const Contidion(),
-        '/FormScreen': (context) =>  FormScreen(),
+        '/FormScreen': (context) =>  const FormScreen(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -41,7 +40,7 @@ class _MyAppState extends State<MyApp> {
             create: (context) => MyScreenState(),
           ),
         ],
-        child: HomePage(),
+        child: const Contidion(),
       ),
     );
   }

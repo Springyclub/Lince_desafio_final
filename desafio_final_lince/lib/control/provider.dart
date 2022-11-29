@@ -3,10 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'database.dart';
 import 'utils/constants.dart';
 
 ///...
 class MyScreenState extends ChangeNotifier {
+  dynamic _counter;
+
+  dynamic get counter => _counter;
   /// Init method
   MyScreenState() {
     unawaited(_init());
@@ -58,9 +62,28 @@ class MyScreenState extends ChangeNotifier {
     await prefs.setInt(keyNumberVacancies, numeroVagas);
     _vacanciesNumber = numeroVagas;
   }
+  final _helper = DatabaseHelper();
 
-  /// Number Validator
+
+  void deleteRandomPerson() async {
+    await _helper.deletePerson(Person("Brisida", 26));
+  }
+
+  void insertPerson(String name, int age) async {
+    await _helper.insertPerson(Person(name, age));
+  }
+
+  void getPerson() async {
+    final all = await _helper.getAll();
+    for (final person in all) {
+      _counter.add(person.name);
+      print('Name: ${person.name}, Age: ${person.age}');
+    }
+  }
+
+
 
 }
+
 
 

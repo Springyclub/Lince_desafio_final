@@ -1,78 +1,101 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:desafio_final_lince/control/utils/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
+const _dbVersion = 1;
 
-class Vacancy{
-  final int? id;
-  final String? name;
-  final String? cardBoard;
+class Person {
+  Person(this.name, this.age);
 
-  Vacancy({this.id, required this.name, required this.cardBoard});
+  Person.fromDatabaseRow(Map<String, Object?> row)
+      : name = row['name'] as String,
+        age = row['age'] as int;
 
-  factory Vacancy.fromMap(Map<String, dynamic> json)=>
-  Vacancy(
-  id: json['id'],
-  name : json['name'],
-  cardBoard : json['cardBoard']
-  );
-
-  Map<String, dynamic> toMap(){
-    return{
-      'id': id,
-      'name': name,
-      'cardBoard': cardBoard,
-    };
-  }
+  final int age;
+  final String name;
 }
 
-class DataBaseHelper{
-  DataBaseHelper._privateContructor();
-  static final DataBaseHelper instance = DataBaseHelper._privateContructor();
-  static Database? _database;
-  Future<Database> get database async => _database??= await _initDatabase();
+class DatabaseHelper {
+  DatabaseHelper() {
+    init();
+  }
 
-  Future<Database> _initDatabase() async{
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, 'vacancy.db');
-    return await openDatabase(
+  late Database _db;
+
+  void init() async {
+    // person
+    //   -> name : TEXT
+    //   -> age  : INT
+
+    final databasesPath = await getDatabasesPath();
+    final path = '$databasesPath/demo.db';
+
+    _db = await openDatabase(
       path,
-      version: 1,
-      onCreate: _onCreate,
+      version: _dbVersion,
+      onCreate: (Database database, int version) async {
+        await database.execute('''
+        CREATE TABLE person (
+          name TEXT PRIMARY KEY,
+          age  INT
+        );
+        ''');
+        //
+      },
+    );
+  }
+
+  Future<Person?> getPersonNamed(String name) async {
+    final rows = await _db.query(
+      'person',
+      columns: ['name', 'age'],
+      where: 'name = ?',
+      whereArgs: [
+        name,
+      ],
+    );
+
+    if (rows.isNotEmpty) {
+      return Person.fromDatabaseRow(rows.first);
+    }
+
+    return null;
+  }
+
+  Future<void> insertPerson(Person person) async {
+    print('Person > ${person.name}, ${person.age}');
+
+    await _db.insert(
+      'person',
+      {
+        'name': person.name,
+        'age': person.age,
+      },
     );
 
   }
-}
-Future _onCreate(Database db,int version)async{
-  await db.execute('''
-  CREATE TABLE vacancy(
-  id INTEGER PRIMARY KEY,
-  name TEXT,
-  cardBoard TEXT
-  )
-  ''');
-}
-Future<List<Vacancy>> getVacancy() async {
-  Database db = await DataBaseHelper.instance.database;
-  var groceries = await db.query('vacancy', orderBy: 'name');
-  List<Vacancy> groceryList = groceries.isNotEmpty
-      ? groceries.map((c) => Vacancy.fromMap(c)).toList()
-      : [];
-  return groceryList;
-}
-Future<int> add(Vacancy vacancy) async{
-   Database db = await DataBaseHelper.instance.database;
-   print(db);
-  return await db.insert('vacancy', vacancy.toMap());
-}
 
-Future<int> remove(int id)async{
-  Database db = await DataBaseHelper.instance.database;
-  return await db.delete('vacancy',where: 'id = ?', whereArgs: [id]);
+  Future<void> deletePerson(Person person) async {
+    print('Delete person > ${person.name}, ${person.age}');
+    await _db.delete(
+      'person',
+      where: 'name = ?',
+      whereArgs: [
+        person.name,
+      ],
+    );
+  }
+
+  Future<List<Person>> getAll() async {
+    final rows = await _db.query(
+      'person',
+      columns: ['name', 'age'],
+    );
+
+    final list = <Person>[];
+    for (final row in rows) {
+      list.add(Person.fromDatabaseRow(row));
+    }
+    return list;
+
+  }
 }
 
