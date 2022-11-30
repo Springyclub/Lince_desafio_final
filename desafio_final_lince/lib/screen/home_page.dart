@@ -37,7 +37,8 @@ class HomePage extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () async {
                                 Navigator.pop(context);
-                                Navigator.popAndPushNamed(context, '/InitialScreen');
+                                Navigator.popAndPushNamed(
+                                    context, '/InitialScreen');
                               },
                               child: const Text(textConfirmeButtonAlertDialog),
                             )
@@ -52,50 +53,7 @@ class HomePage extends StatelessWidget {
               centerTitle: true,
               title: const Text(titleHomePage),
             ),
-            body: state.loading
-                ? const CircularProgressIndicator()
-                : FutureBuilder<List<Vacancy>>(
-                    future: getVacancy(),
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.none:
-                          return const Text('data');
-                        case ConnectionState.waiting:
-                          return Center(
-                            child: Container(
-                              margin: const EdgeInsetsDirectional.all(150),
-                              child: const CircularProgressIndicator(),
-                            ),
-                          );
-                        case ConnectionState.active:
-                          return const Text('data');
-                        case ConnectionState.done:
-                          return snapshot.data == null
-                              ? const Center(
-                                  child: Text('TÁ VÁZIO'),
-                                )
-                              : ListView(
-                                  children: snapshot.data!.map((vacancy) {
-                                  return Center(
-                                      child: ListTile(
-                                    title: Column(
-                                      children: [
-                                        ElevatedButton(
-                                            onPressed: () {
-                                              state.notifyListeners();
-                                              remove(vacancy.id!);
-                                            },
-                                            child: const Text('')),
-                                        Text(vacancy.name.toString()),
-                                        Text(vacancy.id.toString()),
-                                        Text(vacancy.cardBoard.toString()),
-                                      ],
-                                    ),
-                                  ));
-                                }).toList());
-                      }
-                    },
-                  ),
+            body: WidgetVacancies(),
             floatingActionButton: FloatingActionButton(
               splashColor: Colors.red,
               onPressed: () {
@@ -117,16 +75,18 @@ class WidgetVacancies extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = Provider.of<MyScreenState>(context);
 
-    return state.loading
-        ? const CircularProgressIndicator()
-        : Row(
-            children: [
-
-              Text(
-                state.vacanciesNumber.toString(),
-                style: const TextStyle(fontSize: 30),
-              ),
-            ],
-          );
+    return ListView(
+      children: state.list
+          .map((data) => CircleAvatar(
+        minRadius: 50.0,
+        backgroundColor: Colors.red,
+        child: Text(data,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 19.0,
+            )),
+      ))
+          .toList(),
+    );
   }
 }

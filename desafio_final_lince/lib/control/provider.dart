@@ -2,15 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'controller.dart';
+import 'database.dart';
 import 'utils/constants.dart';
 
 ///...
 class MyScreenState extends ChangeNotifier {
+  final _helper = DatabaseHelper();
+
   /// Init method
   MyScreenState() {
     unawaited(_init());
   }
+  List<String> _list = [];
 
   int _vacanciesNumber = 0;
   bool _loading = true;
@@ -19,6 +23,9 @@ class MyScreenState extends ChangeNotifier {
 
   /// Vacancies number
   int get vacanciesNumber => _vacanciesNumber;
+
+  List<String> get list => _list;
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -33,7 +40,6 @@ class MyScreenState extends ChangeNotifier {
 
   Future<void> _init() async {
     final prefs = await SharedPreferences.getInstance();
-
     _vacanciesNumber = prefs.getInt(keyNumberVacancies) ?? 0;
 
     Future.delayed(const Duration(seconds: 3), () {
@@ -59,8 +65,14 @@ class MyScreenState extends ChangeNotifier {
     _vacanciesNumber = numeroVagas;
   }
 
-  /// Number Validator
+  void getPerson() async {
+    final all = await _helper.getAll();
+    for (final person in all) {
+      _list.add(person.name);
+      print('Name: ${person.name}, Age: ${person.age}');
+    }
+    print(_list);
 
+
+  }
 }
-
-

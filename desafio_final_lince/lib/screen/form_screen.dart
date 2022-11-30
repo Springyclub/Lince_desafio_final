@@ -67,9 +67,6 @@ class _FormScreenState extends State<FormScreen> {
                             setState(() {
                               Navigator.pop(context);
                               Navigator.popAndPushNamed(context, '/Condition');
-                              add(
-                                  Vacancy(name: driverName.text, cardBoard: cardBoard.text)
-                              );
 
                             });
                           },
