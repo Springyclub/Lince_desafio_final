@@ -1,18 +1,22 @@
 import 'package:sqflite/sqflite.dart';
 
-const _dbVersion = 1;
+const _dbVersion = 2;
 
 class Person {
-  Person(this.name, this.age);
-
   Person.fromDatabaseRow(Map<String, Object?> row)
-      : name = row["name"] as String,
-        age = row["age"] as int;
+      : cardBoard = row['cardBoard'] as String,
+        nameDriver = row['nameDriver'] as String,
+        id = row['id'] as int;
 
-  final int age;
-  final String name;
+  int? id;
+  final String cardBoard;
+  final String nameDriver;
+
+  /// Constructor person
+  Person({required this.id, required this.cardBoard, required this.nameDriver});
 }
 
+/// Data base helper
 class DatabaseHelper {
   DatabaseHelper() {
     init();
@@ -21,23 +25,21 @@ class DatabaseHelper {
   late Database _db;
 
   void init() async {
-    // person
-    //   -> name : TEXT
-    //   -> age  : INT
-
     final databasesPath = await getDatabasesPath();
-    final path = '$databasesPath/demo.db';
+    final path = '$databasesPath/table.db';
+
+    const sqlperson = '''CREATE TABLE Driver(
+    id INTEGER,
+    nameDriver TEXT NOT NULL,
+    cardBoard TEXT NOT NULL,
+    PRIMARY KEY("id" AUTOINCREMENT)
+  )''';
 
     _db = await openDatabase(
       path,
       version: _dbVersion,
       onCreate: (Database database, int version) async {
-        await database.execute("""
-        CREATE TABLE person (
-          name TEXT PRIMARY KEY,
-          age  INT
-        );
-        """);
+        await database.execute(sqlperson);
         //
       },
     );
@@ -45,9 +47,9 @@ class DatabaseHelper {
 
   Future<Person?> getPersonNamed(String name) async {
     final rows = await _db.query(
-      "person",
-      columns: ["name", "age"],
-      where: "name = ?",
+      'Driver',
+      columns: ['nameDriver', 'age'],
+      where: 'nameDriver = ?',
       whereArgs: [
         name,
       ],
@@ -61,39 +63,36 @@ class DatabaseHelper {
   }
 
   Future<void> insertPerson(Person person) async {
-    print('Person > ${person.name}, ${person.age}');
-
+    print('Person > ${person.nameDriver}, ${person.cardBoard}, ');
     await _db.insert(
-      "person",
+      'Driver',
       {
-        "name": person.name,
-        "age": person.age,
+        'nameDriver': person.nameDriver,
+        'cardBoard': person.nameDriver,
+        'id': person.id
       },
     );
   }
 
   Future<void> deletePerson(Person person) async {
-    print('Delete person > ${person.name}, ${person.age}');
+    print('Delete person > ${person.nameDriver},');
     await _db.delete(
-      "person",
-      where: "name = ?",
+      'Driver',
+      where: 'name = ?',
       whereArgs: [
-        person.name,
+        person.nameDriver,
       ],
     );
   }
 
   Future<List<Person>> getAll() async {
     final rows = await _db.query(
-      "person",
-      columns: ["name", "age"],
-    );
-
+      'Driver', orderBy: 'id');
+    print(rows);
     final list = <Person>[];
     for (final row in rows) {
       list.add(Person.fromDatabaseRow(row));
     }
-
     return list;
   }
 }

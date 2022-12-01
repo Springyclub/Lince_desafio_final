@@ -14,7 +14,6 @@ class MyScreenState extends ChangeNotifier {
   MyScreenState() {
     unawaited(_init());
   }
-  List<String> _list = [];
 
   int _vacanciesNumber = 0;
   bool _loading = true;
@@ -24,7 +23,13 @@ class MyScreenState extends ChangeNotifier {
   /// Vacancies number
   int get vacanciesNumber => _vacanciesNumber;
 
-  List<String> get list => _list;
+  List<String> _listName = [];
+  List<String> get listName => _listName;
+  List<String> get listId => _listId;
+  List<String> _listId =[];
+  List<String> get listaCardBoard => _listaCardBoard;
+  List<String> _listaCardBoard = [];
+
 
 
   final _formKey = GlobalKey<FormState>();
@@ -65,14 +70,18 @@ class MyScreenState extends ChangeNotifier {
     _vacanciesNumber = numeroVagas;
   }
 
+  /// Get person
   void getPerson() async {
     final all = await _helper.getAll();
     for (final person in all) {
-      _list.add(person.name);
-      print('Name: ${person.name}, Age: ${person.age}');
+      _listName.add(person.nameDriver);
+      _listaCardBoard.add(person.cardBoard);
     }
-    print(_list);
+  }
 
+  void insertDb(String cardBoard, String nameDriver, int id) async {
+    final all = await _helper.insertPerson(
+        Person(id: id, cardBoard: cardBoard, nameDriver: nameDriver));
 
   }
 }

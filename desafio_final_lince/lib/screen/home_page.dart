@@ -56,8 +56,8 @@ class HomePage extends StatelessWidget {
             body: WidgetVacancies(),
             floatingActionButton: FloatingActionButton(
               splashColor: Colors.red,
-              onPressed: () {
-                Navigator.pushNamed(context, '/FormScreen');
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/FormScreen');
               },
               child: const Icon(Icons.add),
             ),
@@ -68,25 +68,40 @@ class HomePage extends StatelessWidget {
   }
 }
 
-///TESTE
+/// Class widget vacancies
 class WidgetVacancies extends StatelessWidget {
-  ///TESTE
+  /// Constructor widget vacancies
+  WidgetVacancies({super.key});
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MyScreenState>(context);
-
-    return ListView(
-      children: state.list
-          .map((data) => CircleAvatar(
-        minRadius: 50.0,
-        backgroundColor: Colors.red,
-        child: Text(data,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 19.0,
-            )),
-      ))
-          .toList(),
+    final nameDriver = state.listName;
+    return ListView.separated(
+      padding: const EdgeInsets.all(8),
+      itemCount: nameDriver.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          height: 50,
+          child: Center(child: Text('${nameDriver[index]}')),
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
     );
   }
 }
+class sadasda extends StatelessWidget {
+  const sadasda({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final state = Provider.of<MyScreenState>(context);
+    return ElevatedButton(onPressed: (){
+      state.getPerson();
+    }, child: Text('data'));
+  }
+}
+
+
+
+/// Class widget vacancies
+

@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../control/database.dart';
+import '../control/provider.dart';
 import '../control/utils/constants.dart';
 import '../model/input_text_form.dart';
 
@@ -21,62 +23,67 @@ class _FormScreenState extends State<FormScreen> {
   Widget build(BuildContext context) {
     ///numero de vagas
     final cardBoard = TextEditingController();
-    final driverName = TextEditingController();
+    final nameDriver = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
-    return Form(
-      key: formKey,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(titleFormCar),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Card(
-                color: Colors.blue.shade300,
-                child: Padding(
-                  padding: const EdgeInsets.all(30),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: driverName,
-                        validator: (value) {
-                          if (valueValidator(value)) {
-                            return 'true';
-                          }
-                          return null;
-                        },
-                        textAlign: TextAlign.start,
-                        decoration: inputDecorationTextForm('Nome do piloto'),
-                      ),
-                      TextFormField(
-                        controller: cardBoard,
-                        validator: (value) {
-                          if (valueValidator(value)) {
-                            return 'true';
-                          }
-                          return null;
-                        },
-                        textAlign: TextAlign.start,
-                        decoration: inputDecorationTextForm('Nome do piloto'),
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {
+    return ChangeNotifierProvider(
+      create: (_) => MyScreenState(),
+      child: Consumer<MyScreenState>(
+          builder: (_, state, __) {
+            return Form(
+              key: formKey,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: const Text(titleFormCar),
+                ),
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Card(
+                        color: Colors.blue.shade300,
+                        child: Padding(
+                          padding: const EdgeInsets.all(30),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: nameDriver,
+                                validator: (value) {
+                                  if (valueValidator(value)) {
+                                    return 'true';
+                                  }
+                                  return null;
+                                },
+                                textAlign: TextAlign.start,
+                                decoration: inputDecorationTextForm(
+                                    'Nome do piloto'),
+                              ),
+                              TextFormField(
+                                controller: cardBoard,
+                                validator: (value) {
+                                  if (valueValidator(value)) {
+                                    return 'true';
+                                  }
+                                  return null;
+                                },
+                                textAlign: TextAlign.start,
+                                decoration: inputDecorationTextForm(
+                                    'Nome do piloto'),
+                              ),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    state.insertDb(
+                                        cardBoard.text, nameDriver.text);
+                                  },
 
-                            setState(() {
-                              Navigator.pop(context);
-                              Navigator.popAndPushNamed(context, '/Condition');
-
-                            });
-                          },
-
-                          child: const Text('Adicionar')),
-                    ],
+                                  child: const Text('Adicionar')),
+                            ],
+                          ),
+                        )),
                   ),
-                )),
-          ),
-        ),
+                ),
+              ),
+            );
+          }
       ),
     );
   }
