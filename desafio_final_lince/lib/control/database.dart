@@ -1,98 +1,101 @@
+import 'dart:io';
+
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-const _dbVersion = 2;
-
-class Person {
-  Person.fromDatabaseRow(Map<String, Object?> row)
-      : cardBoard = row['cardBoard'] as String,
-        nameDriver = row['nameDriver'] as String,
-        id = row['id'] as int;
-
-  int? id;
-  final String cardBoard;
+/// Class vacancy
+class Grocery {
+  final int? id;
   final String nameDriver;
+  final String cardBoard;
+  final String parkingLane;
+  final String dateTime;
 
-  /// Constructor person
-  Person({required this.id, required this.cardBoard, required this.nameDriver});
+
+  /// Constructor vacancy
+  Grocery(
+      {this.id,
+      required this.nameDriver,
+      required this.cardBoard,
+      required this.parkingLane,
+      required this.dateTime
+      });
+
+  /// From map
+  factory Grocery.fromMap(Map<String, dynamic> json) => Grocery(
+      id: json['id'],
+      nameDriver: json['nameDriver'],
+      cardBoard: json['cardBoard'],
+      parkingLane: json['parkingLane'],
+      dateTime: json['dateTime']
+  );
+
+  /// To map
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'nameDriver': nameDriver,
+      'cardBoard': cardBoard,
+      'parkingLane': parkingLane,
+      'dateTime' : dateTime
+    };
+  }
 }
 
-/// Data base helper
 class DatabaseHelper {
-  DatabaseHelper() {
-    init();
-  }
+  DatabaseHelper._privateConstructor();
 
-  late Database _db;
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
-  void init() async {
-    final databasesPath = await getDatabasesPath();
-    final path = '$databasesPath/table.db';
+  static Database? _database;
 
-    const sqlperson = '''CREATE TABLE Driver(
-    id INTEGER,
-    nameDriver TEXT NOT NULL,
-    cardBoard TEXT NOT NULL,
-    PRIMARY KEY("id" AUTOINCREMENT)
-  )''';
+  Future<Database> get database async => _database ??= await _initDatabase();
 
-    _db = await openDatabase(
+  Future<Database> _initDatabase() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, 'ggg.db');
+    return await openDatabase(
       path,
-      version: _dbVersion,
-      onCreate: (Database database, int version) async {
-        await database.execute(sqlperson);
-        //
-      },
+      version: 2,
+      onCreate: _onCreate,
     );
   }
 
-  Future<Person?> getPersonNamed(String name) async {
-    final rows = await _db.query(
-      'Driver',
-      columns: ['nameDriver', 'age'],
-      where: 'nameDriver = ?',
-      whereArgs: [
-        name,
-      ],
-    );
-
-    if (rows.isNotEmpty) {
-      return Person.fromDatabaseRow(rows.first);
-    }
-
-    return null;
+  Future _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE ggg(
+          id INTEGER PRIMARY KEY,
+          nameDriver TEXT,
+          cardBoard TEXT,
+          parkingLane TEXT,
+          dateTime TEXT
+      )
+      ''');
   }
 
-  Future<void> insertPerson(Person person) async {
-    print('Person > ${person.nameDriver}, ${person.cardBoard}, ');
-    await _db.insert(
-      'Driver',
-      {
-        'nameDriver': person.nameDriver,
-        'cardBoard': person.nameDriver,
-        'id': person.id
-      },
-    );
+  Future<List<Grocery>> getGroceries() async {
+    Database db = await instance.database;
+    var groceries = await db.query('ggg', orderBy: 'id');
+    List<Grocery> groceryList = groceries.isNotEmpty
+        ? groceries.map((c) => Grocery.fromMap(c)).toList()
+        : [];
+    return groceryList;
   }
 
-  Future<void> deletePerson(Person person) async {
-    print('Delete person > ${person.nameDriver},');
-    await _db.delete(
-      'Driver',
-      where: 'name = ?',
-      whereArgs: [
-        person.nameDriver,
-      ],
-    );
+  Future<int> add(Grocery grocery) async {
+    Database db = await instance.database;
+    return await db.insert('ggg', grocery.toMap());
   }
 
-  Future<List<Person>> getAll() async {
-    final rows = await _db.query(
-      'Driver', orderBy: 'id');
-    print(rows);
-    final list = <Person>[];
-    for (final row in rows) {
-      list.add(Person.fromDatabaseRow(row));
-    }
-    return list;
+  Future<int> remove(int id) async {
+    Database db = await instance.database;
+    return await db.delete('ggg', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> update(Grocery grocery) async {
+    Database db = await instance.database;
+    return await db.update('ggg', grocery.toMap(),
+        where: "id = ?", whereArgs: [grocery.id]);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:desafio_final_lince/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +9,8 @@ import 'screen/form_screen.dart';
 import 'screen/home_page.dart';
 import 'screen/initial_screen.dart';
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());
 }
 
 ///sdasd
@@ -24,12 +26,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: <String, WidgetBuilder>{
-        '/InitialScreen': (context) => const InitialScreen(),
-        '/HomePage': (context) => const HomePage(),
-        '/Condition': (context) => const Contidion(),
-        '/FormScreen': (context) =>  const FormScreen(),
-      },
+      routes: routes(),
       title: 'Flutter Demo',
       theme: ThemeData(
         ////fontFamily: , A fazer
@@ -41,7 +38,7 @@ class _MyAppState extends State<MyApp> {
             create: (context) => MyScreenState(),
           ),
         ],
-        child: HomePage(),
+        child: const Contidion(),
       ),
     );
   }

@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
+import '../model/decoration_container.dart';
 import '../model/input_text_form.dart';
-
 ///OIOIOIOIOIOI
 class InitialScreen extends StatefulWidget {
   ///OIOIOI
@@ -18,7 +17,6 @@ class InitialScreen extends StatefulWidget {
 }
 
 class _InitialScreenState extends State<InitialScreen> {
-  final _formKey = GlobalKey<FormState>();
 
   ///numero de vagas
   final TextEditingController numberController = TextEditingController();
@@ -30,13 +28,9 @@ class _InitialScreenState extends State<InitialScreen> {
       child: Consumer<MyScreenState>(
         builder: (_, state, __) {
           return Form(
-            key: _formKey,
+            key: formKey,
             child: Scaffold(
-              body: state.loading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : SingleChildScrollView(
+              body: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.only(
                           top: 200,
@@ -44,22 +38,12 @@ class _InitialScreenState extends State<InitialScreen> {
                           right: 20,
                         ),
                         child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.blue.shade300,
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(width: 3),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blue.shade700.withOpacity(0.5),
-                                  blurRadius: 4,
-                                  offset: const Offset(5, 8),
-                                ),
-                              ]),
+                          decoration: decorationContainer(),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Padding(
+                            children: const [
+                              Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Qual o numero de vagas?',
@@ -69,19 +53,11 @@ class _InitialScreenState extends State<InitialScreen> {
                                   ),
                                 ),
                               ),
-                              const Padding(
+                              Padding(
                                 padding: EdgeInsets.all(20),
                                 child: Widget1(),
                               ),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      await state.numberVacancies();
-                                     Navigator.of(context)
-                                          .popAndPushNamed('/HomePage');
-                                    }
-                                  },
-                                  child: const Text('Confirmar')),
+
                             ],
                           ),
                         ),
@@ -119,6 +95,15 @@ class Widget1 extends StatelessWidget {
             decoration: inputDecorationTextForm('Numero de vagas'),
           ),
         ),
+        ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                await Navigator.of(context)
+                    .popAndPushNamed('/HomePage');
+                await state.numberVacancies();
+              }
+            },
+            child: const Text('Confirmar')),
       ],
     );
   }

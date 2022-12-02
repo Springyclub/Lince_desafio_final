@@ -1,9 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../control/database.dart';
+
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
+import '../model/decoration_container.dart';
 
 /// Home page
 class HomePage extends StatelessWidget {
@@ -37,8 +39,9 @@ class HomePage extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () async {
                                 Navigator.pop(context);
-                                Navigator.popAndPushNamed(
+                                await Navigator.popAndPushNamed(
                                     context, '/InitialScreen');
+                                await state.deleteNumberVacancies();
                               },
                               child: const Text(textConfirmeButtonAlertDialog),
                             )
@@ -51,9 +54,9 @@ class HomePage extends StatelessWidget {
                 )
               ],
               centerTitle: true,
-              title: const Text(titleHomePage),
+              title: const WidgetTitle(),
             ),
-            body: WidgetVacancies(),
+            body: const WidgetVacancy(),
             floatingActionButton: FloatingActionButton(
               splashColor: Colors.red,
               onPressed: () async {
@@ -68,40 +71,58 @@ class HomePage extends StatelessWidget {
   }
 }
 
-/// Class widget vacancies
-class WidgetVacancies extends StatelessWidget {
-  /// Constructor widget vacancies
-  WidgetVacancies({super.key});
+/// Class widget vacancy
+class WidgetVacancy extends StatelessWidget {
+  /// Constructor widget vacancy
+  const WidgetVacancy({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<MyScreenState>(context);
-    final nameDriver = state.listName;
-    return ListView.separated(
-      padding: const EdgeInsets.all(8),
-      itemCount: nameDriver.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 50,
-          child: Center(child: Text('${nameDriver[index]}')),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) => const Divider(),
+    return ListView(
+      children: state.list
+          .map((e) => Padding(
+                padding: const EdgeInsets.only(
+                  top: 30,
+                  left: 20,
+                  right: 20,
+                ),
+                child: Container(
+                  decoration: decorationContainer(),
+                  child: ListTile(
+                    title: Text(e.dateTime.toString()),
+                    trailing: ElevatedButton(
+                      onPressed: () {
+                        state.removeVacancy(e.id!);
+                      },
+                      child: const Icon(Icons.delete),
+                    ),
+                    leading: ClipRRect(
+                      child: Image.asset('assets/images/iconUser.png'),
+                    ),
+                  ),
+                ),
+              ))
+          .toList(),
     );
   }
 }
-class sadasda extends StatelessWidget {
-  const sadasda({Key? key}) : super(key: key);
+
+/// Title home page
+class WidgetTitle extends StatelessWidget {
+  /// Title home page
+  const WidgetTitle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final state = Provider.of<MyScreenState>(context);
-    return ElevatedButton(onPressed: (){
-      state.getPerson();
-    }, child: Text('data'));
+    return Column(
+      children: const [
+        Text(titleHomePage),
+        Text(
+          'Nº vagas : 2',
+          style: TextStyle(fontSize: 15),
+        ),
+      ],
+    );
   }
 }
-
-
-
-/// Class widget vacancies
-

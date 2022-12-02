@@ -9,7 +9,6 @@ import 'initial_screen.dart';
 class Contidion extends StatelessWidget {
   ///Contidion screen
   const Contidion({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

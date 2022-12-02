@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../control/database.dart';
@@ -28,63 +26,67 @@ class _FormScreenState extends State<FormScreen> {
 
     return ChangeNotifierProvider(
       create: (_) => MyScreenState(),
-      child: Consumer<MyScreenState>(
-          builder: (_, state, __) {
-            return Form(
-              key: formKey,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text(titleFormCar),
-                ),
-                body: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Card(
-                        color: Colors.blue.shade300,
-                        child: Padding(
-                          padding: const EdgeInsets.all(30),
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                controller: nameDriver,
-                                validator: (value) {
-                                  if (valueValidator(value)) {
-                                    return 'true';
-                                  }
-                                  return null;
-                                },
-                                textAlign: TextAlign.start,
-                                decoration: inputDecorationTextForm(
-                                    'Nome do piloto'),
-                              ),
-                              TextFormField(
-                                controller: cardBoard,
-                                validator: (value) {
-                                  if (valueValidator(value)) {
-                                    return 'true';
-                                  }
-                                  return null;
-                                },
-                                textAlign: TextAlign.start,
-                                decoration: inputDecorationTextForm(
-                                    'Nome do piloto'),
-                              ),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    state.insertDb(
-                                        cardBoard.text, nameDriver.text);
-                                  },
-
-                                  child: const Text('Adicionar')),
-                            ],
+      child: Consumer<MyScreenState>(builder: (_, state, __) {
+        return Form(
+          key: formKey,
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text(titleFormCar),
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Card(
+                    color: Colors.blue.shade300,
+                    child: Padding(
+                      padding: const EdgeInsets.all(30),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: nameDriver,
+                            validator: (value) {
+                              if (valueValidator(value)) {
+                                return 'true';
+                              }
+                              return null;
+                            },
+                            textAlign: TextAlign.start,
+                            decoration:
+                                inputDecorationTextForm('Nome do piloto'),
                           ),
-                        )),
-                  ),
-                ),
+                          TextFormField(
+                            controller: cardBoard,
+                            validator: (value) {
+                              if (valueValidator(value)) {
+                                return 'true';
+                              }
+                              return null;
+                            },
+                            textAlign: TextAlign.start,
+                            decoration:
+                                inputDecorationTextForm('Nome do piloto'),
+                          ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                state.addVacancy(
+                                  Grocery(
+                                      nameDriver: nameDriver.text,
+                                      cardBoard: cardBoard.text,
+                                      parkingLane: nameDriver.text,
+                                      dateTime: DateTime.now().toString()),
+                                );
+                                Navigator.pop(context);
+                                Navigator.popAndPushNamed(context, '/HomePage');
+                              },
+                              child: const Text('Adicionar')),
+                        ],
+                      ),
+                    )),
               ),
-            );
-          }
-      ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }

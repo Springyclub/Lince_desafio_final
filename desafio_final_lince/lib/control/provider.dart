@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'controller.dart';
-import 'database.dart';
 import 'utils/constants.dart';
+import 'package:desafio_final_lince/control/database.dart';
 
 ///...
 class MyScreenState extends ChangeNotifier {
-  final _helper = DatabaseHelper();
+  DatabaseHelper db = DatabaseHelper.instance;
+  List<Grocery> _list = [];
+
+  List<Grocery> get list => _list;
 
   /// Init method
   MyScreenState() {
@@ -23,15 +25,6 @@ class MyScreenState extends ChangeNotifier {
   /// Vacancies number
   int get vacanciesNumber => _vacanciesNumber;
 
-  List<String> _listName = [];
-  List<String> get listName => _listName;
-  List<String> get listId => _listId;
-  List<String> _listId =[];
-  List<String> get listaCardBoard => _listaCardBoard;
-  List<String> _listaCardBoard = [];
-
-
-
   final _formKey = GlobalKey<FormState>();
 
   ///Form key
@@ -44,12 +37,12 @@ class MyScreenState extends ChangeNotifier {
   bool get loading => _loading;
 
   Future<void> _init() async {
+    await getDb();
     final prefs = await SharedPreferences.getInstance();
     _vacanciesNumber = prefs.getInt(keyNumberVacancies) ?? 0;
 
     Future.delayed(const Duration(seconds: 3), () {
       _loading = false;
-      notifyListeners();
     });
   }
 
@@ -70,18 +63,35 @@ class MyScreenState extends ChangeNotifier {
     _vacanciesNumber = numeroVagas;
   }
 
-  /// Get person
-  void getPerson() async {
-    final all = await _helper.getAll();
-    for (final person in all) {
-      _listName.add(person.nameDriver);
-      _listaCardBoard.add(person.cardBoard);
+  /// Get data base
+  Future<void> getDb() async {
+    var dba = await db.getGroceries();
+    _list.clear();
+    for (final pp in dba) {
+      _list.add(pp);
     }
+    notifyListeners();
   }
 
-  void insertDb(String cardBoard, String nameDriver, int id) async {
-    final all = await _helper.insertPerson(
-        Person(id: id, cardBoard: cardBoard, nameDriver: nameDriver));
+  /// Add vacancy
+  void addVacancy(Grocery vacancy) async {
+    print('asdasdasdasdasdadasdasd');
+    print(vacancy);
+    if(vacancy != null){
+      await db.add(vacancy);
+      await getDb();
+    }
+    notifyListeners();
 
+  }
+
+  /// Remove vacancy
+  void removeVacancy(int idVacancy) async {
+    if (idVacancy == null) {
+    } else {
+      await db.remove(idVacancy);
+      await getDb();
+    }
+    notifyListeners();
   }
 }

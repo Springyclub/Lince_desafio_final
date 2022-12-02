@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 /// Key number vacancies
 const String keyNumberVacancies = 'numero_vagas';
 /// Title home page
@@ -27,3 +29,5 @@ bool numberValidator(String? value) {
   }
   return true;
 }
+/// Form key
+final formKey = GlobalKey<FormState>();
