@@ -104,22 +104,22 @@ class DatabaseHelper {
     return db.insert('ggg', grocery.toMap());
   }
 
-  /// Add remove
+  /// Remove vacancy
   Future<int> remove(int id) async {
     final db = await instance.database;
     return db.delete('ggg', where: 'id = ?', whereArgs: [id]);
   }
 
-  /// Add update
+  /// Update vacancy
   Future<int> update(Vacancy grocery) async {
     var db = await instance.database;
     return db.update('ggg', grocery.toMap(),
         where: 'id = ?', whereArgs: [grocery.id]);
   }
-
+  /// Remove vacancy
   Future<void> removeAll(List<Vacancy> list) async {
     final db = await instance.database;
-    print('Remove all');
     await db.delete('ggg');
   }
+
 }

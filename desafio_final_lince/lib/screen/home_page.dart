@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class HomePage extends StatelessWidget {
                       },
                     );
 
-                    if(result ?? false) {
+                    if (result ?? false) {
                       await state.reloadInfo();
                     }
                   },
@@ -70,28 +71,35 @@ class WidgetVacancy extends StatelessWidget {
     final state = Provider.of<MyScreenState>(context);
     return ListView(
       children: state.list
-          .map((e) => Padding(
-                padding: const EdgeInsets.only(
-                  top: 30,
-                  left: 20,
-                  right: 20,
-                ),
-                child: Container(
-                  decoration: decorationContainer(),
-                  child: ListTile(
-                    title: Text(e.dateTime.toString()),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        state.removeVacancy(e.id!);
-                      },
-                      child: const Icon(Icons.delete),
-                    ),
-                    leading: ClipRRect(
-                      child: Image.asset('assets/images/iconUser.png'),
+          .map(
+            (e) => Padding(
+              padding: const EdgeInsets.only(
+                top: 30,
+                left: 20,
+                right: 20,
+              ),
+              child: Container(
+                child: ListTile(
+                  subtitle: Text('Placa do carro : ${e.cardBoard}'),
+                  title: Text(
+                    'Nome do motorista : ${e.nameDriver}',
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+                      state.update(e);
+                    },
+                    child: const Icon(Icons.delete),
+                  ),
+                  leading: ClipRRect(
+                    child: Image.file(
+                      File('/data/user/0/com.example.desafio_final_lince/'
+                          'app_flutter/${e.cardBoard}'),
                     ),
                   ),
                 ),
-              ))
+              ),
+            ),
+          )
           .toList(),
     );
   }

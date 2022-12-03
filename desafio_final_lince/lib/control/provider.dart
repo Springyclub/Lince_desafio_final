@@ -16,6 +16,7 @@ class MyScreenState extends ChangeNotifier {
     unawaited(_init());
   }
 
+  final image = '';
   final ImagePicker _picker = ImagePicker();
 
   /// Data base helper
@@ -111,21 +112,22 @@ class MyScreenState extends ChangeNotifier {
   Future<void> removeAll(List<Vacancy> list) async {
     await db.removeAll(list);
   }
+  Future<void> update(Vacancy up) async {
+    await db.update(up);
+  }
 
-  /// Image picker
-  Future<void> imagePicker() async {
+
+    /// Image picker
+  Future<void> imagePicker(String photos) async {
     final photo = await _picker.pickImage(source: ImageSource.camera);
-
     if (!valueValidator(photo?.path)) {
       final file = File(photo!.path);
 
       final directore = await getApplicationDocumentsDirectory();
 
-      final path = await file.copy('${directore.path}/${photo.name}');
+      final path = await file.copy('${directore.path}/$photos');
 
       print('PATH >> ${path.path}');
-
     }
-
   }
 }

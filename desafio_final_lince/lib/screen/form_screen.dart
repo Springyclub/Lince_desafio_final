@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../control/database.dart';
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
+import '../model/decoration_container.dart';
 import '../model/input_text_form.dart';
-import 'package:image_picker/image_picker.dart';
 
 /// Form screen
 class FormScreen extends StatelessWidget {
@@ -18,6 +18,7 @@ class FormScreen extends StatelessWidget {
     ///numero de vagas
     final cardBoard = TextEditingController();
     final nameDriver = TextEditingController();
+    final parkingLane = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
     return ChangeNotifierProvider(
@@ -30,15 +31,16 @@ class FormScreen extends StatelessWidget {
               title: const Text(titleFormCar),
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Card(
-                    color: Colors.blue.shade300,
-                    child: Padding(
-                      padding: const EdgeInsets.all(30),
-                      child: Column(
-                        children: [
-                          TextFormField(
+              child: Container(
+                  margin: const EdgeInsets.only(left: 50, right: 50, top: 70),
+                  decoration: decorationContainer(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
                             controller: nameDriver,
                             validator: (value) {
                               if (valueValidator(value)) {
@@ -50,7 +52,10 @@ class FormScreen extends StatelessWidget {
                             decoration:
                                 inputDecorationTextForm('Nome do piloto'),
                           ),
-                          TextFormField(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
                             controller: cardBoard,
                             validator: (value) {
                               if (valueValidator(value)) {
@@ -60,31 +65,53 @@ class FormScreen extends StatelessWidget {
                             },
                             textAlign: TextAlign.start,
                             decoration:
-                                inputDecorationTextForm('Nome do piloto'),
+                                inputDecorationTextForm('Placa do carro'),
                           ),
-                          ElevatedButton(
-                              onPressed: () async{
-                                await state.imagePicker();
-                              },
-                              child: const Icon(Icons.camera_alt)),
-                          ElevatedButton(
-                              onPressed: () async {
-                                state.addVacancy(
-                                  Vacancy(
-                                      nameDriver: nameDriver.text,
-                                      cardBoard: cardBoard.text,
-                                      parkingLane: nameDriver.text,
-                                      dateTime: DateTime.now().toString()),
-                                );
-                                Navigator.pop(context);
-                                await Navigator.popAndPushNamed(
-                                    context, '/HomePage');
-                              },
-                              child: const Text('Adicionar')),
-                        ],
-                      ),
-                    )),
-              ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            controller: parkingLane,
+                            validator: (value) {
+                              if (valueValidator(value)) {
+                                return 'true';
+                              }
+                              return null;
+                            },
+                            textAlign: TextAlign.start,
+                            decoration: inputDecorationTextForm('N° faixa'),
+                          ),
+                        ),
+                        ElevatedButton(
+                            onPressed: cardBoard.text.length >7?() {
+                              const snackBar = SnackBar(
+                                content: Text('Numero da placa está inválido'),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }:
+                            (){
+                              state.imagePicker(cardBoard.text.toString());
+                            },
+                            child: const Icon(Icons.camera_alt)),
+                        ElevatedButton(
+                            onPressed: () async {
+                              state.addVacancy(
+                                Vacancy(
+                                    nameDriver: nameDriver.text,
+                                    cardBoard: cardBoard.text,
+                                    parkingLane: nameDriver.text,
+                                    dateTime: DateTime.now().toString(),
+                                ),
+                              );
+                              Navigator.pop(context);
+                              await Navigator.popAndPushNamed(
+                                  context, '/HomePage');
+                            },
+                            child: const Text('Adicionar')),
+                      ],
+                    ),
+                  )),
             ),
           ),
         );
