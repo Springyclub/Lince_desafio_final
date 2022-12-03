@@ -5,64 +5,48 @@ import '../control/provider.dart';
 import '../control/utils/constants.dart';
 import '../model/decoration_container.dart';
 import '../model/input_text_form.dart';
-///OIOIOIOIOIOI
-class InitialScreen extends StatefulWidget {
-  ///OIOIOI
-  const InitialScreen({super.key});
 
-  ///titulo do app
+class InitialScreen extends StatelessWidget {
+  const InitialScreen({
+    super.key,
+    required this.state,
+  });
 
-  @override
-  State<InitialScreen> createState() => _InitialScreenState();
-}
-
-class _InitialScreenState extends State<InitialScreen> {
+  final MyScreenState state;
 
   ///numero de vagas
-  final TextEditingController numberController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => MyScreenState(),
+    return ChangeNotifierProvider.value(
+      value: state,
       child: Consumer<MyScreenState>(
         builder: (_, state, __) {
-          return Form(
-            key: formKey,
-            child: Scaffold(
-              body: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 200,
-                          left: 20,
-                          right: 20,
-                        ),
-                        child: Container(
-                          decoration: decorationContainer(),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Qual o numero de vagas?',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(20),
-                                child: Widget1(),
-                              ),
-
-                            ],
-                          ),
+          return Material(
+            child: Container(
+              decoration: decorationContainer(),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Qual o numero de vagas?',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Widget1(),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
@@ -96,14 +80,15 @@ class Widget1 extends StatelessWidget {
           ),
         ),
         ElevatedButton(
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
-                await Navigator.of(context)
-                    .popAndPushNamed('/HomePage');
-                await state.numberVacancies();
-              }
-            },
-            child: const Text('Confirmar')),
+          onPressed: () async {
+            if (formKey.currentState!.validate()) {
+              await state.numberVacancies();
+              // ignore: use_build_context_synchronously
+              Navigator.pop(context, true);
+            }
+          },
+          child: const Text('Confirmar'),
+        ),
       ],
     );
   }

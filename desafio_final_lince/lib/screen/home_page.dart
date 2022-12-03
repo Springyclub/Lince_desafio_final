@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
 import '../model/decoration_container.dart';
+import 'initial_screen.dart';
 
 /// Home page
 class HomePage extends StatelessWidget {
@@ -22,33 +23,17 @@ class HomePage extends StatelessWidget {
             appBar: AppBar(
               actions: [
                 ElevatedButton(
-                  onPressed: () {
-                    unawaited(showDialog(
+                  onPressed: () async {
+                    final result = await showDialog<bool>(
                       context: context,
                       builder: (context) {
-                        return AlertDialog(
-                          title: const Text(titleAlertDialog),
-                          content: const Text(contentAlertDiolog),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, false);
-                              },
-                              child: const Text(textCancelButtonAlertDialog),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                                await Navigator.popAndPushNamed(
-                                    context, '/InitialScreen');
-                                await state.deleteNumberVacancies();
-                              },
-                              child: const Text(textConfirmeButtonAlertDialog),
-                            )
-                          ],
-                        );
+                        return InitialScreen(state: state);
                       },
-                    ));
+                    );
+
+                    if(result ?? false) {
+                      await state.reloadInfo();
+                    }
                   },
                   child: const Icon(Icons.exit_to_app_sharp),
                 )
@@ -56,12 +41,16 @@ class HomePage extends StatelessWidget {
               centerTitle: true,
               title: const WidgetTitle(),
             ),
-            body: const WidgetVacancy(),
+            body: state.loading
+                ? const CircularProgressIndicator()
+                : const WidgetVacancy(),
             floatingActionButton: FloatingActionButton(
               splashColor: Colors.red,
-              onPressed: () async {
-                await Navigator.pushNamed(context, '/FormScreen');
-              },
+              onPressed: state.hasVacancy
+                  ? () async {
+                      await Navigator.pushNamed(context, '/FormScreen');
+                    }
+                  : () {},
               child: const Icon(Icons.add),
             ),
           );
@@ -115,11 +104,12 @@ class WidgetTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = Provider.of<MyScreenState>(context);
     return Column(
-      children: const [
-        Text(titleHomePage),
+      children: [
+        const Text(titleHomePage),
         Text(
-          'Nº vagas : 2',
+          'Nº vagas : ${state.vacanciesNumber} ',
           style: TextStyle(fontSize: 15),
         ),
       ],

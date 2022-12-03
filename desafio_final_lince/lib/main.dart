@@ -1,13 +1,10 @@
-import 'package:desafio_final_lince/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'control/database.dart';
 import 'control/provider.dart';
+import 'routes.dart';
 import 'screen/contidion.dart';
-import 'screen/form_screen.dart';
 import 'screen/home_page.dart';
-import 'screen/initial_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -38,7 +35,7 @@ class _MyAppState extends State<MyApp> {
             create: (context) => MyScreenState(),
           ),
         ],
-        child: const Contidion(),
+        child: const HomePage(),
       ),
     );
   }

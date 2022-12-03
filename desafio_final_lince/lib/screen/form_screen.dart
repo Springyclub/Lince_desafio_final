@@ -4,17 +4,13 @@ import '../control/database.dart';
 import '../control/provider.dart';
 import '../control/utils/constants.dart';
 import '../model/input_text_form.dart';
+import 'package:image_picker/image_picker.dart';
 
 /// Form screen
-class FormScreen extends StatefulWidget {
+class FormScreen extends StatelessWidget {
   ///sadad
   const FormScreen({super.key});
 
-  @override
-  State<FormScreen> createState() => _FormScreenState();
-}
-
-class _FormScreenState extends State<FormScreen> {
   /// Form screen
 
   @override
@@ -67,16 +63,22 @@ class _FormScreenState extends State<FormScreen> {
                                 inputDecorationTextForm('Nome do piloto'),
                           ),
                           ElevatedButton(
+                              onPressed: () async{
+                                await state.imagePicker();
+                              },
+                              child: const Icon(Icons.camera_alt)),
+                          ElevatedButton(
                               onPressed: () async {
                                 state.addVacancy(
-                                  Grocery(
+                                  Vacancy(
                                       nameDriver: nameDriver.text,
                                       cardBoard: cardBoard.text,
                                       parkingLane: nameDriver.text,
                                       dateTime: DateTime.now().toString()),
                                 );
                                 Navigator.pop(context);
-                                Navigator.popAndPushNamed(context, '/HomePage');
+                                await Navigator.popAndPushNamed(
+                                    context, '/HomePage');
                               },
                               child: const Text('Adicionar')),
                         ],
