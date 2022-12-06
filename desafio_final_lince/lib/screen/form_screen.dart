@@ -83,14 +83,7 @@ class FormScreen extends StatelessWidget {
                           ),
                         ),
                         ElevatedButton(
-                            onPressed: cardBoard.text.length >7?() {
-                              const snackBar = SnackBar(
-                                content: Text('Numero da placa está inválido'),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }:
-                            (){
+                            onPressed: (){
                               state.imagePicker(cardBoard.text.toString());
                             },
                             child: const Icon(Icons.camera_alt)),
@@ -102,6 +95,7 @@ class FormScreen extends StatelessWidget {
                                     cardBoard: cardBoard.text,
                                     parkingLane: nameDriver.text,
                                     dateTime: DateTime.now().toString(),
+                                  parked: 1
                                 ),
                               );
                               Navigator.pop(context);

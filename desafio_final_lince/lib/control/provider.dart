@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'database.dart';
 import 'utils/constants.dart';
 
@@ -16,7 +15,6 @@ class MyScreenState extends ChangeNotifier {
     unawaited(_init());
   }
 
-  final image = '';
   final ImagePicker _picker = ImagePicker();
 
   /// Data base helper
@@ -29,6 +27,8 @@ class MyScreenState extends ChangeNotifier {
   List<Vacancy> get list => _list;
 
   bool get hasVacancy => _vacanciesNumber != 0;
+
+  int get lenght => _list.length;
 
   int _vacanciesNumber = 0;
   bool _loading = true;
@@ -52,10 +52,7 @@ class MyScreenState extends ChangeNotifier {
   Future<void> _init() async {
     await getDb();
     final prefs = await SharedPreferences.getInstance();
-    print('Aqui 0 -> $_vacanciesNumber');
     _vacanciesNumber = prefs.getInt(keyNumberVacancies) ?? 0;
-    print('AQUI 1 -> $_vacanciesNumber');
-    print('AQUI 2 -> ${prefs.getInt(keyNumberVacancies) ?? 0}');
     _loading = false;
     notifyListeners();
   }
@@ -109,15 +106,35 @@ class MyScreenState extends ChangeNotifier {
   }
 
   /// Remove all vacancy
-  Future<void> removeAll(List<Vacancy> list) async {
-    await db.removeAll(list);
-  }
-  Future<void> update(Vacancy up) async {
-    await db.update(up);
+  // Future<void> removeAll(List<Vacancy> list) async {
+  //   await db.removeAll(list);
+  // }
+
+  /// Remove list vacancy
+  Future<void> removeList(int id, String entryDate, int parked) async {
+    final diff =
+        int.parse(DateTime
+            .now()
+            .difference(DateTime.parse(entryDate))
+            .inHours.toString());
+    if(diff<=2){
+      await db.removeList(id, DateTime.now().toString(), 4);
+      print('deu 1');
+    } else if(diff> 2 && diff <= 4){
+      await db.removeList(id, DateTime.now().toString(), 3.75);
+      print('deu 2');
+    }else if(diff> 4&& diff <= 8){
+      await db.removeList(id, DateTime.now().toString(), 3.50);
+      print('deu 3');
+    } else if( diff > 8){
+      await db.removeList(id, DateTime.now().toString(), 8);
+      print('deu 3');
+    }
+    await getDb();
+    notifyListeners();
   }
 
-
-    /// Image picker
+  /// Image picker
   Future<void> imagePicker(String photos) async {
     final photo = await _picker.pickImage(source: ImageSource.camera);
     if (!valueValidator(photo?.path)) {

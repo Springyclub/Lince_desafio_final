@@ -31,7 +31,6 @@ class HomePage extends StatelessWidget {
                         return InitialScreen(state: state);
                       },
                     );
-
                     if (result ?? false) {
                       await state.reloadInfo();
                     }
@@ -42,9 +41,7 @@ class HomePage extends StatelessWidget {
               centerTitle: true,
               title: const WidgetTitle(),
             ),
-            body: state.loading
-                ? const CircularProgressIndicator()
-                : const WidgetVacancy(),
+            body: const WidgetVacancy(),
             floatingActionButton: FloatingActionButton(
               splashColor: Colors.red,
               onPressed: state.hasVacancy
@@ -79,17 +76,30 @@ class WidgetVacancy extends StatelessWidget {
                 right: 20,
               ),
               child: Container(
+                decoration: BoxDecoration(
+                  color: e.parked == 1? Colors.teal:Colors.red,
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.teal.shade700.withOpacity(0.5),
+                      blurRadius: 1,
+                      offset: const Offset(2, 4),
+                    ),
+                  ],
+                ),
                 child: ListTile(
                   subtitle: Text('Placa do carro : ${e.cardBoard}'),
                   title: Text(
                     'Nome do motorista : ${e.nameDriver}',
                   ),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      state.update(e);
+                  trailing: e.parked == 1 ? ElevatedButton(
+                    onPressed: () async {
+                      await state.removeList(e.id!,e.dateTime, e.parked);
                     },
                     child: const Icon(Icons.delete),
-                  ),
+                  ):Text('carro removido \n'
+                      'valor :${e.valor}'),
                   leading: ClipRRect(
                     child: Image.file(
                       File('/data/user/0/com.example.desafio_final_lince/'
@@ -118,7 +128,7 @@ class WidgetTitle extends StatelessWidget {
         const Text(titleHomePage),
         Text(
           'Nº vagas : ${state.vacanciesNumber} ',
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
         ),
       ],
     );
