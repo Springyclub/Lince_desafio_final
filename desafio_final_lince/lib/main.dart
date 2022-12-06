@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'model/provider.dart';
-import 'screen/home_page.dart';
-import 'screen/initial_screen.dart';
 
+import 'control/provider.dart';
+import 'routes.dart';
+import 'screen/contidion.dart';
+import 'screen/home_page.dart';
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -21,10 +23,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: <String, WidgetBuilder>{
-        '/InitialScreen': (context) => const InitialScreen(),
-        '/HomePage': (context) => const HomePage(),
-      },
+      routes: routes(),
       title: 'Flutter Demo',
       theme: ThemeData(
         ////fontFamily: , A fazer
@@ -33,32 +32,10 @@ class _MyAppState extends State<MyApp> {
       home: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) => Counter(),
+            create: (context) => MyScreenState(),
           ),
         ],
-        child: FutureBuilder<int?> (
-          future: Counter().readShared(),
-          builder: (context, snapshot) {
-            switch(snapshot.connectionState){
-              case ConnectionState.none:
-                return const Text('aasdas');
-              case ConnectionState.waiting:
-                return const Text('oi');
-
-              case ConnectionState.active:
-                return const Text('oi');
-
-              case ConnectionState.done:
-                if(Counter().numberValidator(Counter().readShared.toString())){
-                  return const InitialScreen();
-
-                }else{
-                  return const HomePage();
-
-                }
-            }
-          },
-        ),
+        child: const HomePage(),
       ),
     );
   }
